@@ -18,7 +18,7 @@ st.set_page_config(
 # DOWNLOAD MODEL FROM GOOGLE DRIVE
 # =========================================================
 
-MODEL_URL = "https://drive.google.com/file/d/1Ea0OBfbyk4kEPm-nH8xyopLilht82yqe/view?usp=sharing"
+MODEL_URL = "https://drive.google.com/uc?id=1Ea0OBfbyk4kEPm-nH8xyopLilht82yqe"
 MODEL_PATH = "stacking_ensemble.pkl"
 
 if not os.path.exists(MODEL_PATH):
