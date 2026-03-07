@@ -4,8 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-import pickle
-import gdown
+import joblib
 import os
 
 st.set_page_config(
@@ -15,16 +14,12 @@ st.set_page_config(
 )
 
 # =========================================================
-# DOWNLOAD MODEL FROM GOOGLE DRIVE
+# LOAD COMPRESSED MODEL
 # =========================================================
 
-MODEL_URL = "https://drive.google.com/uc?id=1Ea0OBfbyk4kEPm-nH8xyopLilht82yqe"
-MODEL_PATH = "stacking_ensemble.pkl"
+MODEL_PATH = "stacking_ensemble_compressed.pkl"
 
-if not os.path.exists(MODEL_PATH):
-        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-
-model = pickle.load(open(MODEL_PATH, "rb"))
+model = joblib.load(MODEL_PATH)
 
 # =========================================================
 # LOAD DATASET
