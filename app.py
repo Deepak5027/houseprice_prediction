@@ -38,6 +38,10 @@ def load_model():
         return None
 
 model = load_model()
+if model is not None:
+    st.success("Model loaded successfully")
+else:
+    st.error("failed to load model")
 
 # =========================================================
 # LOAD DATASET
