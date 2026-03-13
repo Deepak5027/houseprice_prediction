@@ -401,6 +401,8 @@ elif page == "Prediction System":
 
                 # fill entered values
                 for k, v in input_values.items():
+                    if isinstance(v, str):
+                        v = hash(v) % 1000
                     if k in input_dict:
                         input_dict[k] = v
 
