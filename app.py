@@ -115,7 +115,7 @@ if "user" not in st.session_state:
 
 
 # =========================
-# CYBERPUNK LOGIN UI
+# GLASS LOGIN UI
 # =========================
 
 if not st.session_state.login:
@@ -124,43 +124,43 @@ if not st.session_state.login:
     <style>
 
     .stApp {
-        background-color: #0a0f1c;
+        background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     }
 
-    .cyber-card {
-        background: #111827;
+    .glass {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
         padding: 40px;
-        border-radius: 12px;
-        border: 2px solid #00ffff;
-        box-shadow: 0 0 20px #00ffff;
+        border-radius: 15px;
+        border: 1px solid rgba(255,255,255,0.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        color: white;
     }
 
     .title {
-        font-size: 40px;
+        font-size: 38px;
         text-align: center;
-        color: #00ffff;
         font-weight: bold;
-        text-shadow: 0 0 10px #00ffff;
+        margin-bottom: 10px;
     }
 
     .subtitle {
         text-align: center;
-        color: #00ff9c;
         margin-bottom: 20px;
     }
 
     .stTextInput>div>div>input {
-        background-color: red;
-        color: #00ffff;
-        border: 1px solid #00ffff;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid white;
     }
 
     .stButton>button {
         width: 100%;
-        background-color: black;
-        color: #00ffff;
-        border: 1px solid #00ffff;
-        box-shadow: 0 0 10px #00ffff;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid white;
+        border-radius: 8px;
     }
 
     </style>
@@ -170,12 +170,12 @@ if not st.session_state.login:
 
     with c2:
 
-        st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
+        st.markdown('<div class="glass">', unsafe_allow_html=True)
 
-        st.markdown('<div class="title">CYBER LOGIN</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Secure AI Access Panel</div>', unsafe_allow_html=True)
+        st.markdown('<div class="title">AI Prediction System</div>', unsafe_allow_html=True)
+        st.markdown('<div class="subtitle">Secure Access Panel</div>', unsafe_allow_html=True)
 
-        # -------- LOGIN --------
+        # ---------- LOGIN ----------
 
         if not st.session_state.show_register:
 
@@ -184,7 +184,7 @@ if not st.session_state.login:
             user = st.text_input("Username")
             pwd = st.text_input("Password", type="password")
 
-            if st.button("ACCESS SYSTEM"):
+            if st.button("Login"):
 
                 c.execute(
                     "SELECT * FROM users WHERE username=? AND password=?",
@@ -197,15 +197,14 @@ if not st.session_state.login:
                     st.session_state.login = True
                     st.session_state.user = user
                     st.rerun()
-
                 else:
-                    st.error("ACCESS DENIED")
+                    st.error("Wrong username")
 
-            if st.button("CREATE ACCOUNT"):
+            if st.button("Create Account"):
                 st.session_state.show_register = True
                 st.rerun()
 
-        # -------- REGISTER --------
+        # ---------- REGISTER ----------
 
         else:
 
@@ -214,7 +213,7 @@ if not st.session_state.login:
             new_user = st.text_input("New Username")
             new_pwd = st.text_input("New Password", type="password")
 
-            if st.button("REGISTER USER"):
+            if st.button("Register"):
 
                 c.execute(
                     "INSERT INTO users VALUES(?,?)",
@@ -223,9 +222,9 @@ if not st.session_state.login:
 
                 conn.commit()
 
-                st.success("USER CREATED")
+                st.success("Account created")
 
-            if st.button("BACK TO LOGIN"):
+            if st.button("Back to Login"):
                 st.session_state.show_register = False
                 st.rerun()
 
