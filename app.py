@@ -375,24 +375,41 @@ elif page == "Prediction System":
 
         st.metric("Plot Area", f"{area} sqft")
 
-        input_data = []
+        # ✅ use dict not list
+        input_values = {}
 
         numeric_cols = df.select_dtypes(include=np.number).columns[:-1]
 
         for col in numeric_cols:
-            val = st.number_input(col, float(df[col].min()), float(df[col].max()))
-            input_data.append(val)
+            val = st.number_input(
+                col,
+                float(df[col].min()),
+                float(df[col].max())
+            )
+            input_values[col] = val
+
+        # =========================
+        # PREDICT
+        # =========================
 
         if st.button("Predict"):
 
             try:
-                input_dict ={f: 0 for f in features_list}
 
+                # create all 73 features
+                input_dict = {f: 0 for f in features_list}
+
+                # fill entered values
                 for k, v in input_values.items():
-                    if k in  input_dict:
+                    if k in input_dict:
                         input_dict[k] = v
+
+                # convert to dataframe
                 input_df = pd.DataFrame([input_dict])
-                prediction = model.predict([input_data])
+
+                # correct prediction
+                prediction = model.predict(input_df)
+
                 st.success(f"Prediction Result: {prediction[0]}")
 
             except Exception as e:
