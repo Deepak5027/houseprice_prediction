@@ -100,28 +100,57 @@ cost REAL
 
 conn.commit()
 # =========================
-# LOGIN
+# PROFESSIONAL LOGIN PAGE
 # =========================
-
-if "login" not in st.session_state:
-    st.session_state.login = False
-
-if "admin" not in st.session_state:
-    st.session_state.admin = False
-
 
 if not st.session_state.login:
 
-    st.markdown(
-        """
-        <h1 style='text-align:center;'>AI House Prediction Login</h1>
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <style>
+
+    body {
+        background: linear-gradient(135deg,#141e30,#243b55);
+    }
+
+    .login-box {
+        background-color: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 25px rgba(0,0,0,0.3);
+        text-align: center;
+    }
+
+    .title {
+        font-size: 40px;
+        font-weight: bold;
+        color: #243b55;
+    }
+
+    .subtitle {
+        color: gray;
+        margin-bottom: 20px;
+    }
+
+    .stButton>button {
+        background-color: #243b55;
+        color: white;
+        border-radius: 8px;
+        height: 40px;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1,2,1])
 
     with col2:
+
+        st.markdown('<div class="login-box">', unsafe_allow_html=True)
+
+        st.markdown('<div class="title">AI Prediction Login</div>', unsafe_allow_html=True)
+        st.markdown('<div class="subtitle">Secure Access Panel</div>', unsafe_allow_html=True)
 
         st.subheader("Login")
 
@@ -142,8 +171,7 @@ if not st.session_state.login:
                 st.session_state.login = True
                 st.session_state.user = user
 
-                # ✅ admin check
-                if user == "admin":
+                if user == OWNER_USER:
                     st.session_state.admin = True
                 else:
                     st.session_state.admin = False
@@ -151,9 +179,7 @@ if not st.session_state.login:
                 st.rerun()
 
             else:
-
                 st.error("Wrong username or password")
-
 
         st.markdown("---")
 
@@ -172,6 +198,8 @@ if not st.session_state.login:
             conn.commit()
 
             st.success("User created")
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
     st.stop()
 # =========================================================
