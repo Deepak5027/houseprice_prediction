@@ -150,7 +150,7 @@ if not st.session_state.login:
     }
 
     .stTextInput>div>div>input {
-        background-color: black;
+        background-color: red;
         color: #00ffff;
         border: 1px solid #00ffff;
     }
