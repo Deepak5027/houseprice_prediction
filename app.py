@@ -101,19 +101,21 @@ cost REAL
 conn.commit()
 
 # =========================
-# SESSION STATE INIT (FIX ERROR)
+# SESSION STATE INIT
 # =========================
 
 if "login" not in st.session_state:
     st.session_state.login = False
 
-if "admin" not in st.session_state:
-    st.session_state.admin = False
+if "show_register" not in st.session_state:
+    st.session_state.show_register = False
 
 if "user" not in st.session_state:
     st.session_state.user = ""
+
+
 # =========================
-# PROFESSIONAL LOGIN PAGE
+# CYBERPUNK LOGIN UI
 # =========================
 
 if not st.session_state.login:
@@ -121,96 +123,111 @@ if not st.session_state.login:
     st.markdown("""
     <style>
 
-    body {
-        background: linear-gradient(135deg,#141e30,#243b55);
+    .stApp {
+        background-color: #0a0f1c;
     }
 
-    .login-box {
-        background-color: white;
+    .cyber-card {
+        background: #111827;
         padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0px 0px 25px rgba(0,0,0,0.3);
-        text-align: center;
+        border-radius: 12px;
+        border: 2px solid #00ffff;
+        box-shadow: 0 0 20px #00ffff;
     }
 
     .title {
         font-size: 40px;
+        text-align: center;
+        color: #00ffff;
         font-weight: bold;
-        color: #243b55;
+        text-shadow: 0 0 10px #00ffff;
     }
 
     .subtitle {
-        color: gray;
+        text-align: center;
+        color: #00ff9c;
         margin-bottom: 20px;
     }
 
+    .stTextInput>div>div>input {
+        background-color: black;
+        color: #00ffff;
+        border: 1px solid #00ffff;
+    }
+
     .stButton>button {
-        background-color: #243b55;
-        color: white;
-        border-radius: 8px;
-        height: 40px;
         width: 100%;
-        font-size: 16px;
+        background-color: black;
+        color: #00ffff;
+        border: 1px solid #00ffff;
+        box-shadow: 0 0 10px #00ffff;
     }
 
     </style>
     """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1,2,1])
+    c1, c2, c3 = st.columns([1,2,1])
 
-    with col2:
+    with c2:
 
-        st.markdown('<div class="login-box">', unsafe_allow_html=True)
+        st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
 
-        st.markdown('<div class="title">AI Prediction Login</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Secure Access Panel</div>', unsafe_allow_html=True)
+        st.markdown('<div class="title">CYBER LOGIN</div>', unsafe_allow_html=True)
+        st.markdown('<div class="subtitle">Secure AI Access Panel</div>', unsafe_allow_html=True)
 
-        st.subheader("Login")
+        # -------- LOGIN --------
 
-        user = st.text_input("Username")
-        pwd = st.text_input("Password", type="password")
+        if not st.session_state.show_register:
 
-        if st.button("Login"):
+            st.subheader("Login")
 
-            c.execute(
-                "SELECT * FROM users WHERE username=? AND password=?",
-                (user, pwd),
-            )
+            user = st.text_input("Username")
+            pwd = st.text_input("Password", type="password")
 
-            row = c.fetchone()
+            if st.button("ACCESS SYSTEM"):
 
-            if row:
+                c.execute(
+                    "SELECT * FROM users WHERE username=? AND password=?",
+                    (user, pwd),
+                )
 
-                st.session_state.login = True
-                st.session_state.user = user
+                row = c.fetchone()
 
-                if user == OWNER_USER:
-                    st.session_state.admin = True
+                if row:
+                    st.session_state.login = True
+                    st.session_state.user = user
+                    st.rerun()
+
                 else:
-                    st.session_state.admin = False
+                    st.error("ACCESS DENIED")
 
+            if st.button("CREATE ACCOUNT"):
+                st.session_state.show_register = True
                 st.rerun()
 
-            else:
-                st.error("Wrong username or password")
+        # -------- REGISTER --------
 
-        st.markdown("---")
+        else:
 
-        st.subheader("Register")
+            st.subheader("Register")
 
-        new_user = st.text_input("New Username")
-        new_pwd = st.text_input("New Password", type="password")
+            new_user = st.text_input("New Username")
+            new_pwd = st.text_input("New Password", type="password")
 
-        if st.button("Register"):
+            if st.button("REGISTER USER"):
 
-            c.execute(
-                "INSERT INTO users VALUES(?,?)",
-                (new_user, new_pwd),
-            )
+                c.execute(
+                    "INSERT INTO users VALUES(?,?)",
+                    (new_user, new_pwd),
+                )
 
-            conn.commit()
+                conn.commit()
 
-            st.success("User created")
+                st.success("USER CREATED")
+
+            if st.button("BACK TO LOGIN"):
+                st.session_state.show_register = False
+                st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
 
