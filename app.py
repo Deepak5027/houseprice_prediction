@@ -123,24 +123,33 @@ if not st.session_state.login:
     st.markdown("""
     <style>
 
+    /* FULL PAGE BACKGROUND */
+
     .stApp {
-        background: linear-gradient(135deg,#eef2f7,#ffffff);
+        background: linear-gradient(135deg,#f8fafc,#e2e8f0);
     }
 
+    section.main > div {
+        padding-top: 0rem;
+    }
+
+    /* CENTER BOX */
+
     .login-card {
-        background: white;
-        padding: 45px;
-        border-radius: 14px;
-        box-shadow: 0px 10px 30px rgba(0,0,0,0.08);
+        background: #ffffff;
+        padding: 50px;
+        border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         border: 1px solid #e5e7eb;
     }
 
+    /* TITLE */
+
     .title {
-        font-size: 34px;
+        font-size: 36px;
         font-weight: 700;
         text-align: center;
-        color: #1f2937;
-        margin-bottom: 5px;
+        color: #111827;
     }
 
     .subtitle {
@@ -149,18 +158,23 @@ if not st.session_state.login:
         margin-bottom: 25px;
     }
 
-    .stTextInput>div>div>input {
+    /* INPUT */
+
+    .stTextInput input {
         border-radius: 8px;
-        border: 1px solid #d1d5db;
+        border: 1px solid #cbd5e1;
+        height: 40px;
     }
 
-    .stButton>button {
+    /* BUTTON */
+
+    .stButton button {
         width: 100%;
+        height: 42px;
         border-radius: 8px;
         background-color: #2563eb;
         color: white;
-        height: 42px;
-        font-weight: 500;
+        font-weight: 600;
     }
 
     </style>
@@ -172,8 +186,15 @@ if not st.session_state.login:
 
         st.markdown('<div class="login-card">', unsafe_allow_html=True)
 
-        st.markdown('<div class="title">AI Prediction System</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Secure Access Portal</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="title">AI Prediction System</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div class="subtitle">Secure Login Portal</div>',
+            unsafe_allow_html=True
+        )
 
         if not st.session_state.show_register:
 
@@ -196,15 +217,15 @@ if not st.session_state.login:
                     st.session_state.user = user
                     st.rerun()
                 else:
-                    st.error("Invalid username or password")
+                    st.error("Invalid username")
 
-            if st.button("Create new account"):
+            if st.button("Create account"):
                 st.session_state.show_register = True
                 st.rerun()
 
         else:
 
-            st.subheader("Create Account")
+            st.subheader("Register")
 
             new_user = st.text_input("New Username")
             new_pwd = st.text_input("New Password", type="password")
@@ -218,9 +239,9 @@ if not st.session_state.login:
 
                 conn.commit()
 
-                st.success("Account created successfully")
+                st.success("Account created")
 
-            if st.button("Back to Login"):
+            if st.button("Back"):
                 st.session_state.show_register = False
                 st.rerun()
 
