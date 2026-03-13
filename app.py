@@ -373,32 +373,41 @@ elif page == "Prediction System":
         st.plotly_chart(fig, use_container_width=True)
 
         st.metric("Plot Area", f"{area} sqft")
+
         st.metric("Approx Build Area", f"{area * 1.5:.2f} sqft")
 
-        # ✅ use dict not list
+        # =========================
+        # INPUT VALUES
+        # =========================
+
         input_values = {}
-        # COUNTRY SELECT
+
+        # Country
         countries = ["India", "USA", "UK", "UAE", "Canada"]
         selected_country = st.selectbox("🌍 Select Country", countries)
         input_values["country"] = selected_country
-        # HOUSE TYPE
+
+        # House type
         house_types = ["Normal", "Villa", "Apartment", "Luxury", "Farmhouse"]
         selected_house = st.selectbox("🏠 House Type", house_types)
         input_values["house_type"] = selected_house
-        # MATERIAL TYPE
+
+        # Material
         materials = ["Basic", "Standard", "Premium", "Ultra Luxury"]
         selected_material = st.selectbox("🧱 Material Type", materials)
         input_values["material_type"] = selected_material
-        
 
+        # numeric inputs
         numeric_cols = df.select_dtypes(include=np.number).columns[:-1]
 
         for col in numeric_cols:
+
             val = st.number_input(
                 col,
                 float(df[col].min()),
                 float(df[col].max())
             )
+
             input_values[col] = val
 
         # =========================
@@ -409,50 +418,62 @@ elif page == "Prediction System":
 
             try:
 
-                # create all 73 features
                 input_dict = {f: 0 for f in features_list}
 
-                # fill entered values
                 for k, v in input_values.items():
+
                     if isinstance(v, str):
                         v = hash(v) % 1000
+
                     if k in input_dict:
                         input_dict[k] = v
 
-                # convert to dataframe
                 input_df = pd.DataFrame([input_dict])
 
-                # correct prediction
                 prediction = model.predict(input_df)
+
                 usd = float(prediction[0])
-                inr = usd * 83   # USD → INR conversion
+
+                inr = usd * 83
+
                 lakhs = inr / 100000
+
                 st.success(f"💰 Estimated Cost: {usd:.2f} USD")
+
                 st.info(f"🇮🇳 Indian Rupees: ₹ {inr:,.2f}")
+
                 st.info(f"🏦 In Lakhs: ₹ {lakhs:.2f} Lakh")
-                #dashboard cards
-                
+
+                # dashboard cards
+
                 c1, c2, c3 = st.columns(3)
+
                 c1.metric("USD", f"{usd:.2f}")
+
                 c2.metric("INR", f"{inr:,.0f}")
+
                 c3.metric("Lakhs", f"{lakhs:.2f}")
-                #chart
-                
+
+                # chart
+
                 cost_df = pd.DataFrame({
                     "Type": ["USD", "INR", "Lakhs"],
                     "Value": [usd, inr, lakhs]
                 })
+
                 fig_cost = px.bar(
                     cost_df,
                     x="Type",
                     y="Value",
                     title="Cost Comparison"
                 )
+
                 st.plotly_chart(fig_cost, use_container_width=True)
-                
 
             except Exception as e:
+
                 st.error(f"❌ Prediction error: {e}")
 
     else:
-        st.error("❌ Model or dataset not loaded. Please check file paths.")
+
+        st.error("❌ Model or dataset not loaded.")
