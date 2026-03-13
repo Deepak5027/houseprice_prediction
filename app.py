@@ -1,4 +1,11 @@
 import streamlit as st
+
+st.set_page_config(
+    page_title="AI Powered ML Prediction System",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -123,50 +130,46 @@ if not st.session_state.login:
     st.markdown("""
     <style>
 
-    /* FULL PAGE BACKGROUND */
+    /* FORCE LIGHT BACKGROUND */
 
-    .stApp {
+    html, body, [class*="css"]  {
+        background-color: #f1f5f9 !important;
+    }
+
+    [data-testid="stAppViewContainer"] {
         background: linear-gradient(135deg,#f8fafc,#e2e8f0);
     }
 
-    section.main > div {
-        padding-top: 0rem;
+    [data-testid="stHeader"] {
+        background: transparent;
     }
 
-    /* CENTER BOX */
+    [data-testid="stSidebar"] {
+        display: none;
+    }
+
+    /* CENTER CARD */
 
     .login-card {
-        background: #ffffff;
+        background: white;
         padding: 50px;
         border-radius: 15px;
         box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         border: 1px solid #e5e7eb;
     }
 
-    /* TITLE */
-
     .title {
         font-size: 36px;
-        font-weight: 700;
+        font-weight: bold;
         text-align: center;
-        color: #111827;
+        color: black;
     }
 
     .subtitle {
         text-align: center;
-        color: #6b7280;
+        color: gray;
         margin-bottom: 25px;
     }
-
-    /* INPUT */
-
-    .stTextInput input {
-        border-radius: 8px;
-        border: 1px solid #cbd5e1;
-        height: 40px;
-    }
-
-    /* BUTTON */
 
     .stButton button {
         width: 100%;
@@ -174,12 +177,10 @@ if not st.session_state.login:
         border-radius: 8px;
         background-color: #2563eb;
         color: white;
-        font-weight: 600;
     }
 
     </style>
     """, unsafe_allow_html=True)
-
     col1, col2, col3 = st.columns([1,2,1])
 
     with col2:
