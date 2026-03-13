@@ -115,7 +115,7 @@ if "user" not in st.session_state:
 
 
 # =========================
-# LIGHT GLASS LOGIN UI
+# LIGHT PROFESSIONAL LOGIN
 # =========================
 
 if not st.session_state.login:
@@ -124,59 +124,56 @@ if not st.session_state.login:
     <style>
 
     .stApp {
-        background: linear-gradient(135deg,#e3f2fd,#f5f7fa);
+        background: linear-gradient(135deg,#eef2f7,#ffffff);
     }
 
-    .glass {
-        background: rgba(255,255,255,0.9);
-        padding: 40px;
-        border-radius: 15px;
-        border: 1px solid #ddd;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        color: black;
+    .login-card {
+        background: white;
+        padding: 45px;
+        border-radius: 14px;
+        box-shadow: 0px 10px 30px rgba(0,0,0,0.08);
+        border: 1px solid #e5e7eb;
     }
 
     .title {
-        font-size: 36px;
+        font-size: 34px;
+        font-weight: 700;
         text-align: center;
-        font-weight: bold;
-        color: #2c3e50;
+        color: #1f2937;
         margin-bottom: 5px;
     }
 
     .subtitle {
         text-align: center;
-        color: gray;
-        margin-bottom: 20px;
+        color: #6b7280;
+        margin-bottom: 25px;
     }
 
     .stTextInput>div>div>input {
-        background: white;
-        color: black;
-        border: 1px solid #ccc;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
     }
 
     .stButton>button {
         width: 100%;
-        background: #1976d2;
-        color: white;
         border-radius: 8px;
-        border: none;
+        background-color: #2563eb;
+        color: white;
+        height: 42px;
+        font-weight: 500;
     }
 
     </style>
     """, unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns([1,2,1])
+    col1, col2, col3 = st.columns([1,2,1])
 
-    with c2:
+    with col2:
 
-        st.markdown('<div class="glass">', unsafe_allow_html=True)
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
 
         st.markdown('<div class="title">AI Prediction System</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Secure Login Panel</div>', unsafe_allow_html=True)
-
-        # ---------- LOGIN ----------
+        st.markdown('<div class="subtitle">Secure Access Portal</div>', unsafe_allow_html=True)
 
         if not st.session_state.show_register:
 
@@ -199,17 +196,15 @@ if not st.session_state.login:
                     st.session_state.user = user
                     st.rerun()
                 else:
-                    st.error("Wrong username or password")
+                    st.error("Invalid username or password")
 
-            if st.button("Create Account"):
+            if st.button("Create new account"):
                 st.session_state.show_register = True
                 st.rerun()
 
-        # ---------- REGISTER ----------
-
         else:
 
-            st.subheader("Register")
+            st.subheader("Create Account")
 
             new_user = st.text_input("New Username")
             new_pwd = st.text_input("New Password", type="password")
@@ -223,7 +218,7 @@ if not st.session_state.login:
 
                 conn.commit()
 
-                st.success("Account created")
+                st.success("Account created successfully")
 
             if st.button("Back to Login"):
                 st.session_state.show_register = False
