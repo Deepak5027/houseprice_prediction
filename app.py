@@ -25,6 +25,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # =========================================================
 
 MODEL_PATH = os.path.join(BASE_DIR, "stacking_ensemble_compressed.pkl")
+FEATURES_PATH = os.path.join(BASE_DIR, "features.pkl")
 
 @st.cache_resource
 def load_model():
@@ -37,8 +38,18 @@ def load_model():
     except Exception as e:
         st.error(f"❌ Error loading model: {e}")
         return None
+@st.cache_resource
+def load_features():
+    try:
+        feats = joblib.load(FEATURES_PATH)
+        return feats
+    except Exception as e:
+        st.error(f"Features load error: {e}")
+        return None
 
 model = load_model()
+features_list = load_features()
+
 if model is not None:
     st.success("Model loaded successfully")
 else:
@@ -108,7 +119,7 @@ if page == "Project Overview":
         col3.metric("Model Type", "Stacking Ensemble")
 
         st.subheader("Dataset Preview")
-        st.dataframe(df.head(20))
+        st.dataframe(df.head())
 
 # =========================================================
 # DATASET EXPLORER
@@ -334,7 +345,7 @@ elif page == "Prediction System":
 
     st.write("Enter feature values to make predictions")
 
-    if model is not None and df is not None:
+    if model is not None and df is not None and features_list is not None:
 
         st.subheader("🏠 House Layout Viewer")
 
@@ -375,6 +386,12 @@ elif page == "Prediction System":
         if st.button("Predict"):
 
             try:
+                input_dict ={f: 0 for f in features_list}
+
+                for k, v in input_values.items():
+                    if k in  input_dict:
+                        input_dict[k] = v
+                input_df = pd.DataFrame([input_dict])
                 prediction = model.predict([input_data])
                 st.success(f"Prediction Result: {prediction[0]}")
 
