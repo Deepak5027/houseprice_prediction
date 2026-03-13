@@ -99,6 +99,19 @@ cost REAL
 """)
 
 conn.commit()
+
+# =========================
+# SESSION STATE INIT (FIX ERROR)
+# =========================
+
+if "login" not in st.session_state:
+    st.session_state.login = False
+
+if "admin" not in st.session_state:
+    st.session_state.admin = False
+
+if "user" not in st.session_state:
+    st.session_state.user = ""
 # =========================
 # PROFESSIONAL LOGIN PAGE
 # =========================
