@@ -10,7 +10,8 @@ import os
 import sqlite3
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-DB_PASSWORD = "5027"
+OWNER_USER = "admin"
+DB_PASSWORD = "deepak5027"
 
 st.set_page_config(
     page_title="AI Powered ML Prediction System",
@@ -199,10 +200,9 @@ pages = [
     "Prediction System"
 ]
 
-# admin page only for admin
-if st.session_state.get("admin", False):
+# only owner can see admin panel
+if st.session_state.user == OWNER_USER:
     pages.append("Admin Panel")
-
 
 page = st.sidebar.radio(
     "Select Section",
@@ -627,26 +627,6 @@ elif page == "Prediction System":
     else:
 
         st.error("❌ Model or dataset not loaded.")
-
-#database viewer
-elif page == "Database Viewer":
-
-    st.title("Database Viewer")
-
-    st.subheader("Users")
-
-    users = pd.read_sql("SELECT * FROM users", conn)
-
-    st.dataframe(users)
-
-    st.subheader("Predictions")
-
-    preds = pd.read_sql(
-        "SELECT * FROM predictions",
-        conn
-    )
-
-    st.dataframe(preds)
 
 # =========================================================
 # ADMIN PANEL (OWNER ONLY)
