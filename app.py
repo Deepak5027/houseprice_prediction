@@ -10,6 +10,7 @@ import os
 import sqlite3
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+DB_PASSWORD = "5027"
 
 st.set_page_config(
     page_title="AI Powered ML Prediction System",
@@ -657,20 +658,45 @@ elif page == "Admin Panel":
 
     st.title("Admin Panel")
 
-    users = pd.read_sql("SELECT * FROM users", conn)
+    st.subheader("Open Database Viewer")
 
-    st.dataframe(users)
+    pwd = st.text_input("Enter DB Password", type="password")
 
-    u = st.text_input("Delete username")
+    if pwd == DB_PASSWORD:
 
-    if st.button("Delete User"):
-        c.execute(
-            "DELETE FROM users WHERE username=?",
-            (u,)
+        st.success("Access granted")
+
+        st.subheader("Users")
+
+        users = pd.read_sql(
+            "SELECT * FROM users",
+            conn
         )
-        conn.commit()
-        st.success("Deleted")
 
+        st.dataframe(users)
 
+        st.subheader("Predictions")
+
+        preds = pd.read_sql(
+            "SELECT * FROM predictions",
+            conn
+        )
+
+        st.dataframe(preds)
+
+        st.subheader("Delete User")
+
+        u = st.text_input("Username")
+
+        if st.button("Delete"):
+            c.execute(
+                "DELETE FROM users WHERE username=?",
+                (u,)
+            )
+            conn.commit()
+            st.success("Deleted")
+
+    elif pwd != "":
+        st.error("Wrong password")
 
 
