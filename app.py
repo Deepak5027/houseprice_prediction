@@ -1,11 +1,4 @@
 import streamlit as st
-
-st.set_page_config(
-    page_title="AI Powered ML Prediction System",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -122,131 +115,65 @@ if "user" not in st.session_state:
 
 
 # =========================
-# LIGHT PROFESSIONAL LOGIN
+# SIMPLE LOGIN PAGE
 # =========================
 
 if not st.session_state.login:
 
-    st.markdown("""
-    <style>
+    st.title("AI Prediction System")
 
-    /* FORCE LIGHT BACKGROUND */
+    st.write("Login to continue")
 
-    html, body, [class*="css"]  {
-        background-color: #f1f5f9 !important;
-    }
+    if not st.session_state.show_register:
 
-    [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg,#f8fafc,#e2e8f0);
-    }
+        st.subheader("Login")
 
-    [data-testid="stHeader"] {
-        background: transparent;
-    }
+        user = st.text_input("Username")
+        pwd = st.text_input("Password", type="password")
 
-    [data-testid="stSidebar"] {
-        display: none;
-    }
+        if st.button("Login"):
 
-    /* CENTER CARD */
+            c.execute(
+                "SELECT * FROM users WHERE username=? AND password=?",
+                (user, pwd),
+            )
 
-    .login-card {
-        background: white;
-        padding: 50px;
-        border-radius: 15px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-        border: 1px solid #e5e7eb;
-    }
+            row = c.fetchone()
 
-    .title {
-        font-size: 36px;
-        font-weight: bold;
-        text-align: center;
-        color: black;
-    }
-
-    .subtitle {
-        text-align: center;
-        color: gray;
-        margin-bottom: 25px;
-    }
-
-    .stButton button {
-        width: 100%;
-        height: 42px;
-        border-radius: 8px;
-        background-color: #2563eb;
-        color: white;
-    }
-
-    </style>
-    """, unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1,2,1])
-
-    with col2:
-
-        st.markdown('<div class="login-card">', unsafe_allow_html=True)
-
-        st.markdown(
-            '<div class="title">AI Prediction System</div>',
-            unsafe_allow_html=True
-        )
-
-        st.markdown(
-            '<div class="subtitle">Secure Login Portal</div>',
-            unsafe_allow_html=True
-        )
-
-        if not st.session_state.show_register:
-
-            st.subheader("Login")
-
-            user = st.text_input("Username")
-            pwd = st.text_input("Password", type="password")
-
-            if st.button("Login"):
-
-                c.execute(
-                    "SELECT * FROM users WHERE username=? AND password=?",
-                    (user, pwd),
-                )
-
-                row = c.fetchone()
-
-                if row:
-                    st.session_state.login = True
-                    st.session_state.user = user
-                    st.rerun()
-                else:
-                    st.error("Invalid username")
-
-            if st.button("Create account"):
-                st.session_state.show_register = True
+            if row:
+                st.session_state.login = True
+                st.session_state.user = user
                 st.rerun()
+            else:
+                st.error("Wrong username or password")
 
-        else:
+        st.write("---")
 
-            st.subheader("Register")
+        if st.button("Create new account"):
+            st.session_state.show_register = True
+            st.rerun()
 
-            new_user = st.text_input("New Username")
-            new_pwd = st.text_input("New Password", type="password")
+    else:
 
-            if st.button("Register"):
+        st.subheader("Register")
 
-                c.execute(
-                    "INSERT INTO users VALUES(?,?)",
-                    (new_user, new_pwd),
-                )
+        new_user = st.text_input("New Username")
+        new_pwd = st.text_input("New Password", type="password")
 
-                conn.commit()
+        if st.button("Register"):
 
-                st.success("Account created")
+            c.execute(
+                "INSERT INTO users VALUES(?,?)",
+                (new_user, new_pwd),
+            )
 
-            if st.button("Back"):
-                st.session_state.show_register = False
-                st.rerun()
+            conn.commit()
 
-        st.markdown("</div>", unsafe_allow_html=True)
+            st.success("User created")
+
+        if st.button("Back to Login"):
+            st.session_state.show_register = False
+            st.rerun()
 
     st.stop()
 # =========================================================
