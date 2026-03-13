@@ -76,6 +76,28 @@ def load_data():
 
 df = load_data()
 # =========================
+# DATABASE
+# =========================
+
+conn = sqlite3.connect("app.db", check_same_thread=False)
+c = conn.cursor()
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS users(
+username TEXT,
+password TEXT
+)
+""")
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS predictions(
+username TEXT,
+cost REAL
+)
+""")
+
+conn.commit()
+# =========================
 # LOGIN
 # =========================
 
@@ -138,28 +160,6 @@ page = st.sidebar.radio(
         "Prediction System"
     ]
 )
-# =========================
-# DATABASE
-# =========================
-
-conn = sqlite3.connect("app.db", check_same_thread=False)
-c = conn.cursor()
-
-c.execute("""
-CREATE TABLE IF NOT EXISTS users(
-username TEXT,
-password TEXT
-)
-""")
-
-c.execute("""
-CREATE TABLE IF NOT EXISTS predictions(
-username TEXT,
-cost REAL
-)
-""")
-
-conn.commit()
 
 # =========================
 # PDF FUNCTION
