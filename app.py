@@ -196,8 +196,7 @@ pages = [
     "Cost Analysis Dashboard",
     "Model Performance",
     "Clustering Analysis",
-    "Prediction System",
-    "Database Viewer"
+    "Prediction System"
 ]
 
 # admin page only for admin
@@ -649,18 +648,25 @@ elif page == "Database Viewer":
 
     st.dataframe(preds)
 
-#admin panel
+# =========================================================
+# ADMIN PANEL (OWNER ONLY)
+# =========================================================
+
 elif page == "Admin Panel":
 
-    if not st.session_state.get("admin", False):
-        st.error("Admin only")
+    if not st.session_state.login:
         st.stop()
 
-    st.title("Admin Panel")
+    if st.session_state.user != OWNER_USER:
+        st.error("Not allowed")
+        st.stop()
 
-    st.subheader("Open Database Viewer")
+    st.title("🔐 Owner Database Access")
 
-    pwd = st.text_input("Enter DB Password", type="password")
+    pwd = st.text_input(
+        "Enter Owner Password",
+        type="password"
+    )
 
     if pwd == DB_PASSWORD:
 
@@ -688,15 +694,16 @@ elif page == "Admin Panel":
 
         u = st.text_input("Username")
 
-        if st.button("Delete"):
+        if st.button("Delete User"):
+
             c.execute(
                 "DELETE FROM users WHERE username=?",
                 (u,)
             )
+
             conn.commit()
+
             st.success("Deleted")
 
     elif pwd != "":
         st.error("Wrong password")
-
-
