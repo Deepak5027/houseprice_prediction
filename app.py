@@ -106,41 +106,58 @@ if "login" not in st.session_state:
 
 if not st.session_state.login:
 
-    st.title("🔐 Login Page")
+    st.markdown(
+        """
+        <h1 style='text-align:center;'>AI House Prediction Login</h1>
+        """,
+        unsafe_allow_html=True
+    )
 
-    user = st.text_input("Username")
-    pwd = st.text_input("Password", type="password")
+    col1, col2, col3 = st.columns([1,2,1])
 
-    if st.button("Login"):
+    with col2:
 
-        c.execute(
-            "SELECT * FROM users WHERE username=? AND password=?",
-            (user, pwd),
-        )
+        st.subheader("Login")
 
-        if c.fetchone():
+        user = st.text_input("Username")
+        pwd = st.text_input("Password", type="password")
 
-            st.session_state.login = True
-            st.session_state.user = user
-            st.rerun()
+        if st.button("Login"):
 
-        else:
+            c.execute(
+                "SELECT * FROM users WHERE username=? AND password=?",
+                (user, pwd),
+            )
 
-            st.error("User not found")
+            if c.fetchone():
 
-    if st.button("Register"):
+                st.session_state.login = True
+                st.session_state.user = user
+                st.rerun()
 
-        c.execute(
-            "INSERT INTO users VALUES(?,?)",
-            (user, pwd),
-        )
+            else:
 
-        conn.commit()
+                st.error("Wrong username or password")
 
-        st.success("Registered")
+        st.markdown("---")
+
+        st.subheader("Register")
+
+        new_user = st.text_input("New Username")
+        new_pwd = st.text_input("New Password", type="password")
+
+        if st.button("Register"):
+
+            c.execute(
+                "INSERT INTO users VALUES(?,?)",
+                (new_user, new_pwd),
+            )
+
+            conn.commit()
+
+            st.success("User created")
 
     st.stop()
-
 # =========================================================
 # SIDEBAR
 # =========================================================
