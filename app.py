@@ -409,14 +409,10 @@ elif page == "Prediction System":
 
                 # correct prediction
                 prediction = model.predict(input_df)
-
-usd = float(prediction[0])
-
-inr = usd * 83   # USD → INR conversion
-
-st.success(f"💰 Estimated Cost: {usd:.2f} USD")
-
-st.info(f"🇮🇳 Indian Rupees: ₹ {inr:,.2f}")
+                usd = float(prediction[0])
+                inr = usd * 83   # USD → INR conversion
+                st.success(f"💰 Estimated Cost: {usd:.2f} USD")
+                st.info(f"🇮🇳 Indian Rupees: ₹ {inr:,.2f}")
 
             except Exception as e:
                 st.error(f"❌ Prediction error: {e}")
