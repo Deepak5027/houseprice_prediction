@@ -115,7 +115,7 @@ if "user" not in st.session_state:
 
 
 # =========================
-# GLASS LOGIN UI
+# LIGHT GLASS LOGIN UI
 # =========================
 
 if not st.session_state.login:
@@ -124,43 +124,44 @@ if not st.session_state.login:
     <style>
 
     .stApp {
-        background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+        background: linear-gradient(135deg,#e3f2fd,#f5f7fa);
     }
 
     .glass {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
+        background: rgba(255,255,255,0.9);
         padding: 40px;
         border-radius: 15px;
-        border: 1px solid rgba(255,255,255,0.3);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        color: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        color: black;
     }
 
     .title {
-        font-size: 38px;
+        font-size: 36px;
         text-align: center;
         font-weight: bold;
-        margin-bottom: 10px;
+        color: #2c3e50;
+        margin-bottom: 5px;
     }
 
     .subtitle {
         text-align: center;
+        color: gray;
         margin-bottom: 20px;
     }
 
     .stTextInput>div>div>input {
-        background: rgba(255,255,255,0.2);
-        color: white;
-        border: 1px solid white;
+        background: white;
+        color: black;
+        border: 1px solid #ccc;
     }
 
     .stButton>button {
         width: 100%;
-        background: rgba(255,255,255,0.2);
+        background: #1976d2;
         color: white;
-        border: 1px solid white;
         border-radius: 8px;
+        border: none;
     }
 
     </style>
@@ -173,7 +174,7 @@ if not st.session_state.login:
         st.markdown('<div class="glass">', unsafe_allow_html=True)
 
         st.markdown('<div class="title">AI Prediction System</div>', unsafe_allow_html=True)
-        st.markdown('<div class="subtitle">Secure Access Panel</div>', unsafe_allow_html=True)
+        st.markdown('<div class="subtitle">Secure Login Panel</div>', unsafe_allow_html=True)
 
         # ---------- LOGIN ----------
 
@@ -198,7 +199,7 @@ if not st.session_state.login:
                     st.session_state.user = user
                     st.rerun()
                 else:
-                    st.error("Wrong username")
+                    st.error("Wrong username or password")
 
             if st.button("Create Account"):
                 st.session_state.show_register = True
