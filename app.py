@@ -104,6 +104,10 @@ conn.commit()
 if "login" not in st.session_state:
     st.session_state.login = False
 
+if "admin" not in st.session_state:
+    st.session_state.admin = False
+
+
 if not st.session_state.login:
 
     st.markdown(
@@ -129,15 +133,25 @@ if not st.session_state.login:
                 (user, pwd),
             )
 
-            if c.fetchone():
+            row = c.fetchone()
+
+            if row:
 
                 st.session_state.login = True
                 st.session_state.user = user
+
+                # ✅ admin check
+                if user == "admin":
+                    st.session_state.admin = True
+                else:
+                    st.session_state.admin = False
+
                 st.rerun()
 
             else:
 
                 st.error("Wrong username or password")
+
 
         st.markdown("---")
 
@@ -164,18 +178,35 @@ if not st.session_state.login:
 
 st.sidebar.title("Navigation")
 
+st.sidebar.write(f"👤 User: {st.session_state.user}")
+
+# logout button
+if st.sidebar.button("Logout"):
+    st.session_state.login = False
+    st.session_state.admin = False
+    st.rerun()
+
+
+pages = [
+    "Project Overview",
+    "Dataset Explorer",
+    "EDA Visualizations",
+    "Correlation Analysis",
+    "Cost Analysis Dashboard",
+    "Model Performance",
+    "Clustering Analysis",
+    "Prediction System",
+    "Database Viewer"
+]
+
+# admin page only for admin
+if st.session_state.get("admin", False):
+    pages.append("Admin Panel")
+
+
 page = st.sidebar.radio(
     "Select Section",
-    [
-        "Project Overview",
-        "Dataset Explorer",
-        "EDA Visualizations",
-        "Correlation Analysis",
-        "Cost Analysis Dashboard",
-        "Model Performance",
-        "Clustering Analysis",
-        "Prediction System"
-    ]
+    pages
 )
 
 # =========================
@@ -596,3 +627,50 @@ elif page == "Prediction System":
     else:
 
         st.error("❌ Model or dataset not loaded.")
+
+#database viewer
+elif page == "Database Viewer":
+
+    st.title("Database Viewer")
+
+    st.subheader("Users")
+
+    users = pd.read_sql("SELECT * FROM users", conn)
+
+    st.dataframe(users)
+
+    st.subheader("Predictions")
+
+    preds = pd.read_sql(
+        "SELECT * FROM predictions",
+        conn
+    )
+
+    st.dataframe(preds)
+
+#admin panel
+elif page == "Admin Panel":
+
+    if not st.session_state.get("admin", False):
+        st.error("Admin only")
+        st.stop()
+
+    st.title("Admin Panel")
+
+    users = pd.read_sql("SELECT * FROM users", conn)
+
+    st.dataframe(users)
+
+    u = st.text_input("Delete username")
+
+    if st.button("Delete User"):
+        c.execute(
+            "DELETE FROM users WHERE username=?",
+            (u,)
+        )
+        conn.commit()
+        st.success("Deleted")
+
+
+
+
