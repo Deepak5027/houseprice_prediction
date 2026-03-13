@@ -7,6 +7,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import joblib
 import os
+import sqlite3
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 st.set_page_config(
     page_title="AI Powered ML Prediction System",
@@ -72,6 +75,49 @@ def load_data():
         return None
 
 df = load_data()
+# =========================
+# LOGIN
+# =========================
+
+if "login" not in st.session_state:
+    st.session_state.login = False
+
+if not st.session_state.login:
+
+    st.title("🔐 Login Page")
+
+    user = st.text_input("Username")
+    pwd = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+
+        c.execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (user, pwd),
+        )
+
+        if c.fetchone():
+
+            st.session_state.login = True
+            st.session_state.user = user
+            st.rerun()
+
+        else:
+
+            st.error("User not found")
+
+    if st.button("Register"):
+
+        c.execute(
+            "INSERT INTO users VALUES(?,?)",
+            (user, pwd),
+        )
+
+        conn.commit()
+
+        st.success("Registered")
+
+    st.stop()
 
 # =========================================================
 # SIDEBAR
@@ -92,6 +138,46 @@ page = st.sidebar.radio(
         "Prediction System"
     ]
 )
+# =========================
+# DATABASE
+# =========================
+
+conn = sqlite3.connect("app.db", check_same_thread=False)
+c = conn.cursor()
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS users(
+username TEXT,
+password TEXT
+)
+""")
+
+c.execute("""
+CREATE TABLE IF NOT EXISTS predictions(
+username TEXT,
+cost REAL
+)
+""")
+
+conn.commit()
+
+# =========================
+# PDF FUNCTION
+# =========================
+
+def make_pdf(cost):
+
+    file = "report.pdf"
+
+    c = canvas.Canvas(file, pagesize=letter)
+
+    c.drawString(100, 750, "AI House Prediction Report")
+
+    c.drawString(100, 700, f"Estimated Cost USD: {cost}")
+
+    c.save()
+
+    return file
 
 # =========================================================
 # PROJECT OVERVIEW
@@ -432,6 +518,13 @@ elif page == "Prediction System":
 
                 prediction = model.predict(input_df)
 
+                username = st.session_state.user
+                c.execute(
+                    "INSERT INTO predictions VALUES(?,?)",
+                    (username, float(prediction[0])),
+                )
+                conn.commit()
+
                 usd = float(prediction[0])
 
                 inr = usd * 83
@@ -443,6 +536,15 @@ elif page == "Prediction System":
                 st.info(f"🇮🇳 Indian Rupees: ₹ {inr:,.2f}")
 
                 st.info(f"🏦 In Lakhs: ₹ {lakhs:.2f} Lakh")
+
+                pdf_file = make_pdf(usd)
+                with open(pdf_file, "rb") as f:
+                    
+                    st.download_button(
+                        "📄 Download PDF",
+                        f,
+                        file_name="report.pdf"
+                    )
 
                 # dashboard cards
 
