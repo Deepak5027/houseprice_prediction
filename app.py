@@ -381,7 +381,7 @@ elif page == "Clustering Analysis":
 
 elif page == "Prediction System":
 
-    st.title("🔮 AI Prediction System")
+    st.title(" House Price Prediction System")
 
     st.write("Enter feature values to make predictions")
 
