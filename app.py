@@ -139,7 +139,7 @@ def make_pdf(cost):
 # =========================================================
 
 if page == "Project Overview":
-    st.title("🤖 AI Powered Machine Learning Prediction System")
+    st.title("🤖 Machine Learning House Price Prediction System")
 
     st.markdown("""
     ### Project Features
