@@ -53,7 +53,7 @@ model = load_model()
 features_list = load_features()
 
 if model is not None:
-    st.success("Model loaded  not successfully")
+    st.success("Model loaded  successfully")
 else:
     st.error("failed to load model")
 
