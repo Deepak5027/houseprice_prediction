@@ -10,8 +10,6 @@ import os
 import sqlite3
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-OWNER_USER = "admin"
-DB_PASSWORD = "deepak5027"
 
 st.set_page_config(
     page_title="AI Powered ML Prediction System",
@@ -85,104 +83,16 @@ conn = sqlite3.connect("app.db", check_same_thread=False)
 c = conn.cursor()
 
 c.execute("""
-CREATE TABLE IF NOT EXISTS users(
-username TEXT,
-password TEXT
-)
-""")
-
-c.execute("""
 CREATE TABLE IF NOT EXISTS predictions(
-username TEXT,
 cost REAL
 )
 """)
-
 conn.commit()
-
-# =========================
-# SESSION STATE INIT
-# =========================
-
-if "login" not in st.session_state:
-    st.session_state.login = False
-
-if "show_register" not in st.session_state:
-    st.session_state.show_register = False
-
-if "user" not in st.session_state:
-    st.session_state.user = ""
-
-
-# =========================
-# SIMPLE LOGIN PAGE
-# =========================
-
-if not st.session_state.login:
-
-    st.title("AI Prediction System")
-
-    st.write("Login to continue")
-
-    if not st.session_state.show_register:
-
-        st.subheader("Login")
-
-        user = st.text_input("Username")
-        pwd = st.text_input("Password", type="password")
-
-        if st.button("Login"):
-
-            c.execute(
-                "SELECT * FROM users WHERE username=? AND password=?",
-                (user, pwd),
-            )
-
-            row = c.fetchone()
-
-            if row:
-                st.session_state.login = True
-                st.session_state.user = user
-                st.rerun()
-            else:
-                st.error("Wrong username or password")
-
-        st.write("---")
-
-        if st.button("Create new account"):
-            st.session_state.show_register = True
-            st.rerun()
-
-    else:
-
-        st.subheader("Register")
-
-        new_user = st.text_input("New Username")
-        new_pwd = st.text_input("New Password", type="password")
-
-        if st.button("Register"):
-
-            c.execute(
-                "INSERT INTO users VALUES(?,?)",
-                (new_user, new_pwd),
-            )
-
-            conn.commit()
-
-            st.success("User created")
-
-        if st.button("Back to Login"):
-            st.session_state.show_register = False
-            st.rerun()
-
-    st.stop()
 # =========================================================
 # SIDEBAR
 # =========================================================
 
 st.sidebar.title("Navigation")
-
-st.sidebar.write(f"👤 User: {st.session_state.user}")
 
 # logout button
 if st.sidebar.button("Logout"):
@@ -201,11 +111,6 @@ pages = [
     "Clustering Analysis",
     "Prediction System"
 ]
-
-# only owner can see admin panel
-if st.session_state.user == OWNER_USER:
-    pages.append("Admin Panel")
-
 page = st.sidebar.radio(
     "Select Section",
     pages
@@ -629,63 +534,3 @@ elif page == "Prediction System":
     else:
 
         st.error("❌ Model or dataset not loaded.")
-
-# =========================================================
-# ADMIN PANEL (OWNER ONLY)
-# =========================================================
-
-elif page == "Admin Panel":
-
-    if not st.session_state.login:
-        st.stop()
-
-    if st.session_state.user != OWNER_USER:
-        st.error("Not allowed")
-        st.stop()
-
-    st.title("🔐 Owner Database Access")
-
-    pwd = st.text_input(
-        "Enter Owner Password",
-        type="password"
-    )
-
-    if pwd == DB_PASSWORD:
-
-        st.success("Access granted")
-
-        st.subheader("Users")
-
-        users = pd.read_sql(
-            "SELECT * FROM users",
-            conn
-        )
-
-        st.dataframe(users)
-
-        st.subheader("Predictions")
-
-        preds = pd.read_sql(
-            "SELECT * FROM predictions",
-            conn
-        )
-
-        st.dataframe(preds)
-
-        st.subheader("Delete User")
-
-        u = st.text_input("Username")
-
-        if st.button("Delete User"):
-
-            c.execute(
-                "DELETE FROM users WHERE username=?",
-                (u,)
-            )
-
-            conn.commit()
-
-            st.success("Deleted")
-
-    elif pwd != "":
-        st.error("Wrong password")
