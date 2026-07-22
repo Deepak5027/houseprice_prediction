@@ -12,7 +12,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 st.set_page_config(
-    page_title="AI Powered ML Prediction System",
+    page_title="ML Prediction System For House Price Detection",
     layout="wide",
     page_icon="🤖"
 )
@@ -53,7 +53,7 @@ model = load_model()
 features_list = load_features()
 
 if model is not None:
-    st.success("Model loaded successfully")
+    st.success("Model loaded  not successfully")
 else:
     st.error("failed to load model")
 
